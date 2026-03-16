@@ -1,31 +1,58 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ja">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>有福温泉 住民アプリ</title>
+    <title>有福温泉 ARIFUKU PASS</title>
     <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
     <style>
       body {
         font-family: sans-serif;
         background-color: #efeee7;
         margin: 0;
-        padding: 20px;
+        padding: 0 0 20px 0;
         display: flex;
         flex-direction: column;
         align-items: center;
       }
 
-      /* 免許証（住民カード）のデザイン */
+      /* ヘッダーセクション */
+      .header-container {
+        width: 100%;
+        max-width: 90%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 0 10px 0;
+        background-color: transparent;
+      }
+
+      .top-logo {
+        max-width: 60px;
+        height: auto;
+        display: block;
+      }
+
+      .header-title {
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: #2d5a4c;
+        text-align: center;
+        flex-grow: 1;
+        margin-right: 60px;
+      }
+
+      /* 住民カード（住民票）のデザイン */
       .id-card {
         background: #fff;
         border: 3px solid #000;
         border-radius: 20px;
         padding: 15px;
         width: 100%;
-        max-width: 400px;
-        margin-bottom: 30px;
+        max-width: 90%;
+        margin-bottom: 25px;
         box-shadow: 5px 5px 0px rgba(0, 0, 0, 0.1);
+        box-sizing: border-box;
       }
       .photo-frame img {
         width: 100%;
@@ -63,27 +90,73 @@
         font-size: 1rem;
       }
       .level-description {
-        font-size: 0.8rem;
-        color: #555;
-        margin-top: 5px;
-        text-align: right;
+        font-size: 0.85rem;
+        color: #333;
+        margin-top: 8px;
+        text-align: left;
+        line-height: 1.4;
       }
 
-      /* 体験一覧のデザイン */
+      /* メッセージ */
+      .welcome-message {
+        width: 100%;
+        max-width: 90%;
+        margin: 10px 0 15px 0;
+        text-align: center;
+        font-size: 0.9rem;
+        line-height: 1.6;
+        color: #333;
+      }
+
+      /* 所要時間ボタン */
+      .time-selection-title {
+        width: 100%;
+        max-width: 90%;
+        font-size: 0.9rem;
+        font-weight: bold;
+        margin-bottom: 12px;
+        color: #333;
+        text-align: center;
+      }
+
+      .time-button-container {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        justify-content: center;
+        margin-bottom: 30px;
+        width: 100%;
+        max-width: 90%;
+      }
+
+      .time-button {
+        background-color: #2d5a4c;
+        color: #efeee7;
+        padding: 8px 12px;
+        border-radius: 6px;
+        font-size: 0.8rem;
+        font-weight: bold;
+        text-align: center;
+        min-width: 70px;
+        border: none;
+      }
+
+      /* 体験一覧 */
       .section-title {
         width: 100%;
-        max-width: 800px;
+        max-width: 90%;
         font-weight: bold;
         margin-bottom: 10px;
         border-left: 5px solid #000;
         padding-left: 10px;
+        box-sizing: border-box;
       }
       .container {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
         gap: 15px;
         width: 100%;
-        max-width: 800px;
+        max-width: 90%;
       }
       .card {
         background: white;
@@ -92,6 +165,7 @@
         border: 2px solid #000;
         display: flex;
         flex-direction: column;
+        box-sizing: border-box;
       }
       .title {
         font-weight: bold;
@@ -103,8 +177,17 @@
         color: #666;
         flex-grow: 1;
       }
-      .status {
+
+      /* 時間と料金を横に並べるコンテナ */
+      .time-fee-container {
+        display: flex;
+        gap: 5px;
         margin-top: 10px;
+      }
+
+      /* 時間と料金のバッジスタイル */
+      .info-badge {
+        flex: 1;
         padding: 4px;
         border-radius: 4px;
         font-size: 0.7rem;
@@ -112,88 +195,119 @@
         color: #00796b;
         font-weight: bold;
         text-align: center;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
       }
     </style>
   </head>
   <body>
+    <div class="header-container">
+      <img src="ロゴ.png" alt="有福温泉" class="top-logo" />
+      <div class="header-title">ARIFUKU PASS</div>
+    </div>
+
     <div class="id-card">
-      <div class="photo-frame"><img src="有福温泉.JPG" /></div>
+      <div class="photo-frame">
+        <img id="user-image" src="有福温泉.JPG" alt="住民写真" />
+      </div>
       <div class="card-info">
         <div class="info-top-row">
           <p class="user-name" id="line-name">ゲスト 様</p>
           <div class="level-badge">
-            <span class="level-label" id="user-level">読み込み中...</span>
+            <span class="level-label" id="user-title">---</span>
             <div class="stars" id="star-display"></div>
           </div>
         </div>
-        <div class="level-description" id="level-detail">
-          住民情報を確認中...
+        <div class="level-description" id="level-description">
+          住民情報を取得しています...
         </div>
       </div>
     </div>
 
-    <div class="section-title">体験メニュー一覧</div>
+    <div class="welcome-message">
+      有福温泉がもっと楽しくなるコンテンツを集めました！<br />
+      たっぷり遊んで湯ったりとした素敵な1日をお過ごしください。
+    </div>
 
+    <div class="time-selection-title">所要時間で選ぶ</div>
+    <div class="time-button-container">
+      <div class="time-button">〜5分</div>
+      <div class="time-button">〜30分</div>
+      <div class="time-button">1時間</div>
+      <div class="time-button">1時間30分</div>
+    </div>
+
+    <div class="section-title">体験メニュー一覧</div>
     <div class="container" id="content-list">
       <p>データを読み込み中です...</p>
     </div>
 
     <script>
       const LIFF_ID = "2009202315-CpSIZ4ec";
-      const GAS_URL =
-        "https://script.google.com/macros/s/AKfycbx1l6X-oxecE7Isic_2DLsDOR7X4AsQRWEOTyrjtgNF4jTlATEwwZtDDvU9DvYcbCS0/exec";
+      const WORKSHOP_GAS_URL =
+        "https://script.google.com/macros/s/AKfycbzcbW9sTWFjM7f8dqbfa0IvK1Wjx7Rh9c1Ph_rS-VUQrNssFMcLXfzUjtTzcEwztVvOpg/exec";
+      const RESIDENT_GAS_URL =
+        "https://script.google.com/macros/s/AKfycbM22sCEZnNvTouDBWyDaE7WRn4LgNdtd6nqxs-xfggoNRpZzVbvAmTDagbXUtJyaZv/exec";
 
       async function main() {
-        // --- LINEログイン & 会員登録処理 ---
         try {
           await liff.init({ liffId: LIFF_ID });
-          if (!liff.isLoggedIn()) {
-            liff.login();
-            return;
+          if (liff.isLoggedIn()) {
+            const profile = await liff.getProfile();
+            document.getElementById("line-name").innerText =
+              profile.displayName + " 様";
           }
-          const profile = await liff.getProfile();
-          document.getElementById("line-name").innerText =
-            profile.displayName + " 様";
-
-          // 会員シートに情報を送る（uidとnameをGASへ飛ばす）
-          fetch(
-            `${GAS_URL}?uid=${profile.userId}&name=${encodeURIComponent(profile.displayName)}`,
-          );
         } catch (err) {
-          console.error("LIFFエラー:", err);
+          console.log("LIFF初期化エラー:", err);
         }
 
-        // --- スプレッドシートデータ取得 ---
+        // --- 住民票データの取得と反映 ---
         try {
-          const response = await fetch(GAS_URL);
-          const data = await response.json();
-
-          // 住民票データの反映（とりあえず1件目）
-          if (data.length > 0) {
-            const status = data[0];
-            document.getElementById("user-level").innerText = status.title;
-            document.getElementById("level-detail").innerText =
-              status.description;
+          const resResident = await fetch(
+            RESIDENT_GAS_URL + "?v=" + new Date().getTime(),
+          );
+          const residentData = await resResident.json();
+          if (residentData && residentData.length > 0) {
+            const resident = residentData[0];
+            document.getElementById("user-title").innerText =
+              resident.title || "一般住民";
+            const s = parseInt(resident.stars) || 0;
             document.getElementById("star-display").innerText =
-              "★".repeat(status.stars) + "☆".repeat(5 - status.stars);
+              "★".repeat(s) + "☆".repeat(5 - s);
+            document.getElementById("level-description").innerText =
+              resident.description || "";
           }
+        } catch (error) {
+          console.error("住民票取得エラー:", error);
+        }
 
-          // 体験一覧の反映
+        // --- ワークショップ一覧の取得と反映 ---
+        try {
+          const resWorkshop = await fetch(
+            WORKSHOP_GAS_URL + "?v=" + new Date().getTime(),
+          );
+          const workshopData = await resWorkshop.json();
           const listContainer = document.getElementById("content-list");
           listContainer.innerHTML = "";
-          data.forEach((item) => {
+          workshopData.forEach((item) => {
             if (!item.title) return;
             const card = document.createElement("div");
             card.className = "card";
             card.innerHTML = `
-                        <div class="title">${item.title}</div>
-                        <div class="description">${item.description}</div>
-                        <div class="status">${item.status}</div>
-                    `;
+                <div class="title">${item.title}</div>
+                <div class="description">${item.description || ""}</div>
+                <div class="time-fee-container">
+                  <div class="info-badge">${item.time || "---"}</div>
+                  <div class="info-badge">${item.status || "---"}</div>
+                </div>
+            `;
             listContainer.appendChild(card);
           });
         } catch (error) {
-          console.error("データ取得エラー:", error);
+          console.error("メニュー取得エラー:", error);
+          document.getElementById("content-list").innerHTML =
+            "<p>データ連携に失敗しました。</p>";
         }
       }
 
