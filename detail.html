@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>体験詳細 | ARIFUKU PASS</title>
+    <link rel="stylesheet" href="style.css" />
+    <style>
+      /* パソコンで見てもスマホサイズ（最大幅480px）に固定するための追加CSS */
+      .mobile-wrapper {
+        max-width: 480px; /* ここがスマホの横幅の基準になります */
+        width: 100%;
+        margin: 0 auto; /* 画面の中央に配置 */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="mobile-wrapper">
+      <div class="header-container">
+        <button class="back-btn" onclick="window.history.back()">戻る</button>
+        <div class="header-title">体験詳細</div>
+        <div style="width: 60px"></div>
+      </div>
+
+      <div class="detail-content" id="detail-content">
+        <p>データを読み込んでいます...</p>
+      </div>
+    </div>
+    <script>
+      // 画面が開かれたときに実行される処理
+      document.addEventListener("DOMContentLoaded", () => {
+        // 一覧画面で保存したデータを引っ張り出す
+        const savedData = sessionStorage.getItem("selectedWorkshop");
+
+        if (savedData) {
+          // データがあればHTMLに組み立てる
+          const item = JSON.parse(savedData);
+          const detailContent = document.getElementById("detail-content");
+
+          const imageHtml = item.image
+            ? `<img src="${item.image}" class="detail-image" />`
+            : "";
+
+          detailContent.innerHTML = `
+            ${imageHtml}
+            <div class="detail-title">${item.title}</div>
+            <div class="time-fee-container" style="margin-bottom: 15px;">
+              <div class="info-badge">⌛ ${item.time || "---"}</div>
+              <div class="info-badge">💰 ${item.status || "---"}</div>
+            </div>
+            <div class="detail-desc">${item.description || "詳細情報はありません。"}</div>
+          `;
+        } else {
+          // データがない（直接URLを開いたなど）場合はエラーメッセージ
+          document.getElementById("detail-content").innerHTML =
+            "<p>データが見つかりませんでした。一覧に戻ってやり直してください。</p>";
+        }
+      });
+    </script>
+  </body>
+</html>
