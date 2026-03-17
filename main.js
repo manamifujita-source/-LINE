@@ -1,7 +1,8 @@
 const LIFF_ID = "2009202315-CpSIZ4ec";
 
+// ▼ 新しい体験一覧のURLに変更しました ▼
 const WORKSHOP_GAS_URL =
-  "https://script.google.com/macros/s/AKfycbzcbW9sTWFjM7f8dqbfa0IvK1Wjx7Rh9c1Ph_rS-VUQrNssFMcLXfzUjtTzcEwztVvOpg/exec";
+  "https://script.google.com/macros/s/AKfycbwQMQteor2aIEbczKi_EsxMSubkkjh78g94xdh-UKLE9Xzky2bJVUEdjSDzpfj0d5mdYA/exec";
 const RESIDENT_GAS_URL =
   "https://script.google.com/macros/s/AKfycbxM22sCEZnNvTouDBWyDaE7WRn4LgNdtd6nqxs-xfggoNRpZzVbvAmTDagbXUtJyaZv/exec";
 
@@ -36,7 +37,7 @@ async function main() {
       document.getElementById("level-description").innerText = "住民票読込失敗";
     });
 
-  // ワークショップデータの取得
+  // ワークショップ（体験一覧）データの取得
   fetch(WORKSHOP_GAS_URL)
     .then((res) => res.json())
     .then((data) => {
